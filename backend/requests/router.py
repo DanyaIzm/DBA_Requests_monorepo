@@ -1,5 +1,6 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends
+from requests.repository import RequestsRepository
 from database import get_async_session
 from information_system.schemas import InformationSystemSchema
 from society_group.schemas import SocietyGroupSchema
@@ -12,37 +13,28 @@ router = APIRouter()
 
 @router.get("/")
 async def get_requests(
-    sessionmaker: Annotated[get_async_session, Depends()]
+    requests_repo: Annotated[RequestsRepository, Depends()]
 ) -> List[RequestSchema]:
-    return [
-        RequestSchema(
-            applicant_name="Daniel",
-            information_system=InformationSystemSchema(name="123"),
-            society_group=SocietyGroupSchema(name="123"),
-            database_url="https://123.com/123",
-            description="Hello, world!",
-            completed=False,
-        )
-    ]
+    return await requests_repo.get_all()
 
 
 @router.get("/{id}")
-async def get_request(id: int) -> RequestSchema:
-    return RequestSchema(
-        applicant_name="Daniel",
-        information_system=InformationSystemSchema(name="123"),
-        society_group=SocietyGroupSchema(name="123"),
-        database_url="https://123.com/123",
-        description="Hello, world!",
-        completed=False,
-    )
+async def get_request(
+    id: int, requests_repo: Annotated[RequestsRepository, Depends()]
+) -> RequestSchema:
+    return await requests_repo.get_by_id(id)
 
 
 @router.post("/")
-async def create_request(request: CreateRequestSchema):
-    ...
+async def create_request(
+    request: CreateRequestSchema,
+    requests_repo: Annotated[RequestsRepository, Depends()],
+):
+    return await requests_repo.create(request.model_dump())
 
 
 @router.post("/{id}")
-async def complete_request(id: int):
-    ...
+async def change_status(
+    id: int, status: bool, requests_repo: Annotated[RequestsRepository, Depends()]
+):
+    return await requests_repo.change_status(id, status)

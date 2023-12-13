@@ -17,5 +17,9 @@ class Request(Base):
     )
     society_group_id = mapped_column(ForeignKey("society_group.id"), nullable=False)
 
-    information_system = relationship("InformationSystem", back_populates="requests")
-    society_group = relationship("SocietyGroup", back_populates="requests")
+    society_group = relationship(
+        "SocietyGroup", back_populates="requests", uselist=False, lazy="selectin"
+    )
+    information_system = relationship(
+        "InformationSystem", back_populates="requests", uselist=False, lazy="selectin"
+    )
