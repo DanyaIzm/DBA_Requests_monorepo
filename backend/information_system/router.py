@@ -10,15 +10,15 @@ router = APIRouter()
 
 
 @router.get("/")
-def get_information_system() -> List[InformationSystemSchema]:
+async def get_information_system() -> List[InformationSystemSchema]:
     return [InformationSystemSchema(name="Информационная система")]
 
 
 @router.get("/{id}")
-def get_society_group(id: int) -> InformationSystemSchema:
+async def get_society_group(id: int) -> InformationSystemSchema:
     return InformationSystemSchema(name="Информационная система")
 
 
 @router.post("/")
-def create_society_group(society_group: CreateInformationSystemSchema):
+async def create_society_group(society_group: CreateInformationSystemSchema):
     ...
