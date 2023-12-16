@@ -6,15 +6,23 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
+import { API_INFORMATION_SYSTEM } from "../api";
+import axios from "axios";
 
 const AddIS = () => {
+  const [infS, setInfS] = useState("");
+
   const navigate = useNavigate();
 
-  const sendIS = (e) => {
+  const sendIS = async (e) => {
     e.preventDefault();
-    console.log(e);
-    console.log(navigate("/add"));
+
+    await axios.post(API_INFORMATION_SYSTEM, {
+      name: infS,
+    });
+
+    navigate("/add");
   };
 
   return (
@@ -23,7 +31,12 @@ const AddIS = () => {
         <VStack>
           <FormControl>
             <FormLabel>Информационная система</FormLabel>
-            <Input type="text" placeholder="Название информационной системы" />
+            <Input
+              type="text"
+              placeholder="Название информационной системы"
+              value={infS}
+              onChange={(e) => setInfS(e.target.value)}
+            />
           </FormControl>
           <Button colorScheme="blue" size="md" type="submit">
             Отправить

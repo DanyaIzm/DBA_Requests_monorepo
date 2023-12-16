@@ -6,14 +6,22 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { API_SOCIETY_GROUP } from "../api";
 
 const AddSG = () => {
+  const [sg, setSg] = useState("");
+
   const navigate = useNavigate();
 
-  const sendSG = (e) => {
+  const sendSG = async (e) => {
     e.preventDefault();
-    console.log(e);
+
+    await axios.post(API_SOCIETY_GROUP, {
+      name: sg,
+    });
+
     navigate("/add");
   };
 
@@ -23,7 +31,12 @@ const AddSG = () => {
         <VStack>
           <FormControl>
             <FormLabel>Общество группа</FormLabel>
-            <Input type="text" placeholder="Название общества группы" />
+            <Input
+              type="text"
+              placeholder="Название общества группы"
+              value={sg}
+              onChange={(e) => setSg(e.target.value)}
+            />
           </FormControl>
           <Button colorScheme="blue" size="md" type="submit">
             Отправить
