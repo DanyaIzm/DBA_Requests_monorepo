@@ -1,0 +1,42 @@
+services:
+  web:
+    container_name: backend
+    build: ./backend
+    command: bash -c "alembic upgrade head && uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
+    volumes:
+      - ./backend:/usr/src/app
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+    networks:
+      - custom
+  frontend:
+    container_name: frontend
+    build: ./web-client
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start
+    depends_on:
+      - web
+    networks:
+      - custom
+  db:
+    image: postgres:15.3
+    container_name: pgsql
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=administration_fastapi
+    networks:
+      - custom
+networks:
+  custom:
+    driver: bridge
