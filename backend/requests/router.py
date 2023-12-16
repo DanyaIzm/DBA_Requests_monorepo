@@ -13,9 +13,10 @@ router = APIRouter()
 
 @router.get("/")
 async def get_requests(
-    requests_repo: Annotated[RequestsRepository, Depends()]
+    requests_repo: Annotated[RequestsRepository, Depends()],
+    completed: bool | None = None,
 ) -> List[RequestSchema]:
-    return await requests_repo.get_all()
+    return await requests_repo.get_all(completed)
 
 
 @router.get("/{id}")

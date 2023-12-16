@@ -11,8 +11,11 @@ class RequestsRepository:
     def __init__(self, session: Annotated[AsyncSession, Depends(get_async_session)]):
         self.session = session
 
-    async def get_all(self) -> List[Request]:
+    async def get_all(self, completed: bool | None) -> List[Request]:
         get_request = select(Request)
+
+        if completed is not None:
+            get_request = get_request.where(Request.completed == completed)
 
         results = await self.session.execute(get_request)
 
